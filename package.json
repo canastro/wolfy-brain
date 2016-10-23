@@ -1,0 +1,30 @@
+{
+  "name": "wolfy-brain",
+  "version": "1.0.0",
+  "description": "Neural Network of Wolfy",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-polyfill": "^6.9.1",
+    "bluebird": "^3.4.1",
+    "debug": "^2.2.0",
+    "graphql": "^0.6.0",
+    "graphql-custom-datetype": "^0.3.0",
+    "moment": "^2.13.0",
+    "moment-timezone": "^0.5.4",
+    "mongoose": "^4.4.19",
+    "synaptic": "^1.0.6",
+    "winston": "^2.2.0",
+    "winston-daily-rotate-file": "^1.1.4",
+    "zmq": "^2.15.3",
+    "wolfy-models": "git+https://github.com/canastro/wolfy-models"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "nodemon": "^1.9.2"
+  }
+}

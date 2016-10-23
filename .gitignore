@@ -1,0 +1,19 @@
+# Temp files
+.idea
+.tmp
+.sass-cache
+*log*
+log*
+.DS_Store
+
+# External dependencies
+node_modules
+
+# Build folders
+target
+coverage
+reports
+
+# Neural Networks
+ann-*.json
+trainingset.json
