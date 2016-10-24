@@ -2,14 +2,17 @@
 
 const zmq = require('zmq');
 const winston = require('winston');
-const WolfyModels = require('wolfy-models');
+const { Order, Price, Stock } = require('wolfy-models');
 
 const ArtificialNeuralNetwork = require('./artificial-neural-network');
 const boot = require('./boot');
 
+const ZMQ_PORT = process.env.ZMQ_PORT || 9998;
+const DB_NAME = process.env.DB_NAME || 'stocks';
+
 const neuralNetworks = {};
 
-boot('mongodb://localhost/stocks', {
+boot(`mongodb://localhost/${DB_NAME}`, {
     env: 'development'
 });
 
@@ -23,7 +26,7 @@ boot('mongodb://localhost/stocks', {
 const buy = (symbol, price) => {
     winston.info(`BUY ${symbol} for ${price} each`);
 
-    const order = new WolfyModels.Order();
+    const order = new Order();
     order.symbol = symbol;
     order.amount = 10;
     order.isActive = true;
@@ -41,7 +44,7 @@ const buy = (symbol, price) => {
  * and stores a sell order for each
  */
 const sell = (symbol, price) => {
-    return WolfyModels.Order.find({
+    return Order.find({
         symbol,
         type: 'BUY',
         isActive: true
@@ -49,7 +52,7 @@ const sell = (symbol, price) => {
         orders.forEach((item) => {
             winston.info(`SELL ${symbol} for ${price} each`);
 
-            const order = new WolfyModels.Order();
+            const order = new Order();
             order.symbol = item.symbol;
             order.amount = item.amount;
             order.value = item.amount * price;
@@ -72,7 +75,7 @@ const sell = (symbol, price) => {
  * the function buy or sell is called
  */
 const onMessage = (topic, symbol, price) => {
-    WolfyModels.Price.find({ symbol }).sort({'_id': 'descending'}).limit(1).skip(1).exec().then((past) => {
+    Price.find({ symbol }).sort({'_id': 'descending'}).limit(1).skip(1).exec().then((past) => {
         price = JSON.parse(price.toString('utf8'));
 
         if (!price) {
@@ -107,7 +110,7 @@ const createNetwork = (symbol) => {
     neuralNetworks[symbol] = artificialNeuralNetwork;
 
     return artificialNeuralNetwork.load().catch(() =>
-        WolfyModels.Price.find({ symbol }).exec().then((prices) => artificialNeuralNetwork.train(prices))
+        Price.find({ symbol }).exec().then((prices) => artificialNeuralNetwork.train(prices))
     );
 };
 
@@ -115,8 +118,8 @@ const connectSocket = () => {
     const socket = zmq.socket('sub');
     socket.identity = 'subscriber' + process.pid;
 
-    winston.info('connect to tcp://*:9998');
-    socket.bindSync('tcp://127.0.0.1:9998');
+    winston.info(`connect to tcp://*:${ZMQ_PORT}`);
+    socket.bindSync(`tcp://127.0.0.1:${ZMQ_PORT}`);
 
     winston.info('subscribe to ADD_PRICE');
     socket.subscribe('ADD_PRICE');
@@ -124,7 +127,7 @@ const connectSocket = () => {
     socket.on('message', onMessage);
 };
 
-WolfyModels.Stock.find().exec().then((stocks) =>
+Stock.find().exec().then((stocks) =>
     stocks.reduce(
         (promise, stock) => promise.then(() => createNetwork(stock.symbol)),
         Promise.resolve()

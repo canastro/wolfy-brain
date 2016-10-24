@@ -1,3 +1,5 @@
+'use strict';
+
 const winston = require('winston');
 const synaptic = require('synaptic');
 const fs = require('fs');
