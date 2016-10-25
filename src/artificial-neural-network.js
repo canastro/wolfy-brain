@@ -3,6 +3,7 @@
 const winston = require('winston');
 const synaptic = require('synaptic');
 const fs = require('fs');
+const ANN_BASE_PATH = process.env.ANN_BASE_PATH || '.';
 
 const Network = synaptic.Network;
 const Architect = synaptic.Architect;
@@ -161,7 +162,7 @@ class ArtificialNeuralNetwork {
      * Reads a existing ANN configuration and loads it
      */
     load() {
-        const file = `ann-${this.symbol}.json`;
+        const file = `${ANN_BASE_PATH}/ann-${this.symbol}.json`;
         winston.info(`Reading ANN from ${file}`);
 
         return new Promise((resolve, reject) => {
