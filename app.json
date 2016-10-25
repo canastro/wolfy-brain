@@ -1,5 +1,5 @@
 {
     "name": "wolfy-brain",
     "script": "/home/ubuntu/wolfy-brain/current/src/index.js",
-    "watch": true
+    "watch": false
 }

@@ -26,12 +26,16 @@ module.exports = function (shipit) {
         shipit.start('post-publish');
     });
 
-    shipit.task('post-publish', ['clear-nodemodules', 'npm-install', 'pm2-start', 'pm2-save']);
+    shipit.task('post-publish', ['clear-nodemodules', 'npm-install', 'npm-link', 'pm2-start', 'pm2-save']);
 
     // npm install
     // ----------------------------------------------------------------
     shipit.blTask('clear-nodemodules', () =>
         shipit.remote(`cd ${deployToCurrent} && rm -rf node_modules`)
+    );
+
+    shipit.blTask('npm-link', () =>
+        shipit.remote(`cd ${deployToCurrent} && npm link talib && npm link zmq`)
     );
 
     shipit.blTask('npm-install', () =>

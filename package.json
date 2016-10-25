@@ -18,7 +18,6 @@
     "synaptic": "^1.0.6",
     "winston": "^2.2.0",
     "winston-daily-rotate-file": "^1.1.4",
-    "zmq": "^2.15.3",
     "wolfy-models": "git+https://github.com/canastro/wolfy-models"
   },
   "devDependencies": {
