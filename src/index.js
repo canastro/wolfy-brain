@@ -8,7 +8,7 @@ const ArtificialNeuralNetwork = require('./artificial-neural-network');
 const boot = require('./boot');
 
 const ZMQ_PORT = process.env.ZMQ_PORT || 9998;
-const DB_NAME = process.env.DB_NAME || 'stocks';
+const DB_NAME = process.env.DB_NAME || 'wolfy';
 
 const neuralNetworks = {};
 
