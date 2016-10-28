@@ -2,7 +2,9 @@
 
 const zmq = require('zmq');
 const winston = require('winston');
-const { Order, Price, Stock } = require('wolfy-models');
+const Price = require('wolfy-models/src/schema/price');
+const Order = require('wolfy-models/src/schema/order');
+const Stock = require('wolfy-models/src/schema/stock');
 
 const ArtificialNeuralNetwork = require('./artificial-neural-network');
 const boot = require('./boot');
