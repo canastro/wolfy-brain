@@ -3,6 +3,7 @@
 const winston = require('winston');
 const synaptic = require('synaptic');
 const fs = require('fs');
+const NetworkOutput = require('wolfy-models/src/schema/network-output');
 const ANN_BASE_PATH = process.env.ANN_BASE_PATH || '.';
 
 const Network = synaptic.Network;
@@ -99,8 +100,9 @@ class ArtificialNeuralNetwork {
      * When completed the function store is called.
      */
     train (prices) {
-        if (!prices) {
-            throw 'no prices provided';
+        if (!prices || !prices.length) {
+            winston.error('no prices provided');
+            return;
         }
 
         const trainer = new Trainer(this.network);
@@ -131,6 +133,12 @@ class ArtificialNeuralNetwork {
         winston.info('activate item:: ', item);
 
         const result = this.network.activate(item);
+
+        const output = new NetworkOutput();
+        output.symbol = this.symbol;
+        output.output = result;
+        output.save();
+
         return result;
     }
 
