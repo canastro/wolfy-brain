@@ -87,6 +87,7 @@ const onMessage = (topic, symbol, price) => {
         }
 
         const result = neuralNetworks[symbol].activate(past[0], price);
+        winston.info(`${symbol} ==> Activate result ${result}`)
 
         const output = new NetworkOutput();
         output.symbol = symbol;
