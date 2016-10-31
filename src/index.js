@@ -87,6 +87,12 @@ const onMessage = (topic, symbol, price) => {
         }
 
         const result = neuralNetworks[symbol].activate(past[0], price);
+
+        const output = new NetworkOutput();
+        output.symbol = this.symbol;
+        output.result = result;
+        output.save();
+
         if (result > 0.7) {
             winston.info('it predicts that this stock raise');
             return buy(symbol, price.last);
@@ -98,11 +104,6 @@ const onMessage = (topic, symbol, price) => {
         }
 
         winston.info(`it predicts that this stock is stable ==> ${result}`);
-
-        const output = new NetworkOutput();
-        output.symbol = this.symbol;
-        output.result = result;
-        return output.save();
     });
 };
 
