@@ -5,6 +5,7 @@ const winston = require('winston');
 const Price = require('wolfy-models/src/schema/price');
 const Order = require('wolfy-models/src/schema/order');
 const Stock = require('wolfy-models/src/schema/stock');
+const NetworkOutput = require('wolfy-models/src/schema/network-output');
 
 const ArtificialNeuralNetwork = require('./artificial-neural-network');
 const boot = require('./boot');
@@ -96,7 +97,12 @@ const onMessage = (topic, symbol, price) => {
             return sell(symbol, price.last);
         }
 
-        winston.info('it predicts that this stock is stable');
+        winston.info(`it predicts that this stock is stable ==> ${result}`);
+
+        const output = new NetworkOutput();
+        output.symbol = this.symbol;
+        output.output = result;
+        return output.save();
     });
 };
 

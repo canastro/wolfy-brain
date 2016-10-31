@@ -3,7 +3,6 @@
 const winston = require('winston');
 const synaptic = require('synaptic');
 const fs = require('fs');
-const NetworkOutput = require('wolfy-models/src/schema/network-output');
 const ANN_BASE_PATH = process.env.ANN_BASE_PATH || '.';
 
 const Network = synaptic.Network;
@@ -132,14 +131,7 @@ class ArtificialNeuralNetwork {
         const item = buildInputItem(past, current);
         winston.info('activate item:: ', item);
 
-        const result = this.network.activate(item);
-
-        const output = new NetworkOutput();
-        output.symbol = this.symbol;
-        output.output = result;
-        output.save();
-
-        return result;
+        return this.network.activate(item);
     }
 
     /**
