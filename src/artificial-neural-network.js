@@ -148,7 +148,7 @@ class ArtificialNeuralNetwork {
      * Writes the JSON format of the ANN into a file
      */
     store() {
-        const file = `ann-${this.symbol}.json`;
+        const file = `${ANN_BASE_PATH}/ann-${this.symbol}.json`;
         winston.info(`Writing ANN into ${file}`);
 
         const data = JSON.stringify(this.network.toJSON());
