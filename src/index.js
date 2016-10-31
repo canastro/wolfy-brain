@@ -89,7 +89,7 @@ const onMessage = (topic, symbol, price) => {
         const result = neuralNetworks[symbol].activate(past[0], price);
 
         const output = new NetworkOutput();
-        output.symbol = this.symbol;
+        output.symbol = symbol;
         output.result = result;
         output.save();
 
