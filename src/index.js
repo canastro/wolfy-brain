@@ -101,7 +101,7 @@ const onMessage = (topic, symbol, price) => {
 
         const output = new NetworkOutput();
         output.symbol = this.symbol;
-        output.output = result;
+        output.result = result;
         return output.save();
     });
 };
