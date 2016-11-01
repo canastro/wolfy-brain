@@ -69,6 +69,55 @@ const sell = (symbol, price) => {
 };
 
 /**
+ * @name activate
+ * @param {String} symbol
+ * @param {Object} oldPrice
+ * @param {Object} newPrice
+ * Propagates through the network the previous values expected
+ * output, so that the neural network learns
+ */
+const propagate = (symbol, oldPrice, newPrice) => {
+    let expected = .5;
+
+    if (newPrice > oldPrice) { expected = 1; }
+    else if (newPrice < oldPrice) { expected = 0; }
+
+    neuralNetworks[symbol].propagate(expected);
+};
+
+/**
+ * @name activate
+ * @param {String} symbol
+ * @param {Object} oldPrice
+ * @param {Object} newPrice
+ * @returns {Null}
+ * Calls the activate function on the neural network with the old and new
+ * price, it stores the output on the DB.
+ * If the value is higher then 0,7 then it predicts that the price will rise
+ * if lower 0,3 then the price will fall otherwise it will be stable.
+ */
+const activate = (symbol, oldPrice, newPrice) => {
+    const result = neuralNetworks[symbol].activate(oldPrice, newPrice);
+
+    const output = new NetworkOutput();
+    output.symbol = symbol;
+    output.result = parseFloat(result);
+    output.save();
+
+    if (result > 0.7) {
+        winston.info('it predicts that this stock raise');
+        return buy(symbol, newPrice.last);
+    }
+
+    if (result < 0.3) {
+        winston.info('it predicts that this stock fall');
+        return sell(symbol, newPrice.last);
+    }
+
+    winston.info(`it predicts that this stock is stable ==> ${result}`);
+};
+
+/**
  * @name onMessage
  * @param {string} topic
  * @param {string} symbol
@@ -78,7 +127,7 @@ const sell = (symbol, price) => {
  * the function buy or sell is called
  */
 const onMessage = (topic, symbol, price) => {
-    Price.find({ symbol }).sort({'_id': 'descending'}).limit(1).skip(1).exec().then((past) => {
+    Price.find({ symbol }).sort({'_id': 'descending'}).limit(2).skip(1).exec().then((past) => {
         price = JSON.parse(price.toString('utf8'));
 
         if (!price) {
@@ -86,25 +135,9 @@ const onMessage = (topic, symbol, price) => {
             return;
         }
 
-        const result = neuralNetworks[symbol].activate(past[0], price);
-        winston.info(`${symbol} ==> Activate result ${result}`)
-
-        const output = new NetworkOutput();
-        output.symbol = symbol;
-        output.result = result;
-        output.save();
-
-        if (result > 0.7) {
-            winston.info('it predicts that this stock raise');
-            return buy(symbol, price.last);
-        }
-
-        if (result < 0.3) {
-            winston.info('it predicts that this stock fall');
-            return sell(symbol, price.last);
-        }
-
-        winston.info(`it predicts that this stock is stable ==> ${result}`);
+        propagate(symbol, past[1], past[0]);
+        activate(symbol, past[0], price);
+        return neuralNetworks[symbol].store();
     });
 };
 

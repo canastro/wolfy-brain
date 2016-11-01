@@ -1,5 +1,16 @@
 {
     "name": "wolfy-brain",
     "script": "/home/ubuntu/wolfy-brain/current/src/index.js",
-    "watch": false
+    "watch": false,
+    "env": {
+        "ZMQ_PORT": process.env.ZMQ_PORT,
+        "HISTORICAL_PRICING_BASE_URL": process.env.HISTORICAL_PRICING_BASE_URL,
+        "DAILY_PRICING_BASE_URL": process.env.DAILY_PRICING_BASE_URL,
+        "TWITTER_CONSUMER_KEY": process.env.TWITTER_CONSUMER_KEY,
+        "TWITTER_CONSUMER_SECRET": process.env.TWITTER_CONSUMER_SECRET,
+        "DB_NAME": process.env.DB_NAME,
+        "MAIL_USERNAME": process.env.MAIL_USERNAME,
+        "MAIL_PASSWORD": process.env.MAIL_PASSWORD,
+        "API_PORT": process.env.API_PORT
+    }
 }

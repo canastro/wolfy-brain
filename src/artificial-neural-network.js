@@ -107,7 +107,6 @@ class ArtificialNeuralNetwork {
         const trainer = new Trainer(this.network);
         const trainingSet = getTrainingSet(prices);
 
-        // fs.writeFileSync('trainingset.json', JSON.stringify(trainingSet, null, 4));
         const info = trainer.train(trainingSet, {
             rate: .1,
             iterations: 10000,
@@ -131,7 +130,20 @@ class ArtificialNeuralNetwork {
         const item = buildInputItem(past, current);
         winston.info('activate item:: ', item);
 
-        return this.network.activate(item);
+        const result = this.network.activate(item);
+        winston.info(`${this.symbol} ==> Activate result ${result}`);
+
+        return result;
+    }
+
+    /**
+     * @name propagate
+     * @param {Number} expected
+     * Progate the expected value through the network
+     */
+    propagate (expected) {
+        winston.info(`${this.symbol} ==> Propagate ${expected}`);
+        this.network.propagate(.1, [expected]);
     }
 
     /**
