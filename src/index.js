@@ -79,8 +79,8 @@ const sell = (symbol, price) => {
 const propagate = (symbol, oldPrice, newPrice) => {
     let expected = .5;
 
-    if (newPrice > oldPrice) { expected = 1; }
-    else if (newPrice < oldPrice) { expected = 0; }
+    if (newPrice.last > oldPrice.last) { expected = 1; }
+    else if (newPrice.last < oldPrice.last) { expected = 0; }
 
     neuralNetworks[symbol].propagate(expected);
 };
